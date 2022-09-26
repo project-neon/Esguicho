@@ -132,6 +132,42 @@ void simpleStrategy() {
     direction = "IMPOSSIVEL"; // Sensores da esquerda e direita detectando algo simultaneamente e o sensor da frente não
   }
 }
+
+//Condições dessa estratégia:
+//O robô já começa virado e com uma certa distância da borda (a decidir pelos testes #TODO)
+//O robô n pensa, só acelera em meia lua!
+void meiaLua {
+  //TODO: testar o tempo que o robô demora pra percorrer metade da arena e qual a melhor vel
+  for (const timer = 0; timer < 1000 * 1; timer++) {
+    speedL = map(25, 0, 100, 0, 180);
+    speedR = map(100, 0, 100, 0, 180);
+    ESCL.write(speedL); 
+    ESCR.write(speedR); 
+  }
+  flag = 1; //Considera que o inimigo deve estar na esquerda pois atacou pela direita
+  strategy = 'simple'; //Retorna pra estratégia padrão caso o ataque inicial não tenha dado certo
+}
+
+//Condições dessa estratégia:
+//O robô comseça virado pro inimigo e dá uma voltinha pra poder fazer a meia lua
+//O robô n pensa, só acelera em meia lua!
+void meiaLuaEmS {
+  //TODO: testar o tempo que o robô demora pra percorrer metade da arena e qual a melhor vel
+  for (const timer = 0; timer < 1000 * 0.25; timer++) {
+    speedL = map(100, 0, 100, 0, 180);
+    speedR = map(25, 0, 100, 0, 180);
+    ESCL.write(speedL); 
+    ESCR.write(speedR); 
+  }
+  for (const timer = 0; timer < 1000 * 0.75; timer++) {
+    speedL = map(25, 0, 100, 0, 180);
+    speedR = map(100, 0, 100, 0, 180);
+    ESCL.write(speedL); 
+    ESCR.write(speedR); 
+  }
+  flag = 1; //Considera que o inimigo deve estar na esquerda pois atacou pela direita
+  strategy = 'simple'; //Retorna pra estratégia padrão caso o ataque inicial não tenha dado certo
+}
  
 void loop() {
   //Armazena os valores lidos nas respectivas variáveis
@@ -143,7 +179,7 @@ void loop() {
   //Os valores aqui utilizados servem apenas para um teste de tomada de decisão
   //O número "200" é um número aleatório apenas para o teste
 
-  //TODO: Alterar pra comerçar verificando as distC/L/R
+  //TODO: Alterar pra começar verificando as distC/L/R
   if(flag == -1 && distC > 5000 && distL > 5000 && distR > 5000 ){
     speedL = 0;
     speedR = 0;
@@ -153,6 +189,12 @@ void loop() {
   switch(strategy) {
     case "simple":
       simpleStrategy();
+      break;
+    case "meiaLua":
+      meiaLua();
+      break;
+    case "meiaLuaEmS":
+      meiaLuaEmS();
       break;
     default:
       simpleStrategy();
