@@ -3,10 +3,14 @@
  * utilizando 3 sensores VL53L0X como acionadores
  */
 
-//Inclui as bibliotecas necessárias
-#include <ESP32Servo.h> //Biblioteca utilizada para comunicar com a ESC de cada motor
-#include <Wire.h>       //Biblieoteca auxiliar para os sensores
-#include <VL53L0X.h>    //Biblioteca para utilizar os sensores
+//Bibliotecas externas
+#include <ESP32Servo.h> //Comunicação com a ESC de cada motor
+#include <VL53L0X.h>    //sensores de distância
+#include <Wire.h>       //Auxiliar dos sensores
+
+//Bibliotecas internas
+#include "_config.h"
+
 
 //Cria os objetos para  cada ESC
 Servo ESCL; //ESC que controla o motor da esquerda
@@ -17,32 +21,11 @@ VL53L0X sensorL;  //Sensor da esquerda
 VL53L0X sensorC;  //Sensor da frente
 VL53L0X sensorR;  //Sensor da direita
 
-//Pinos GPIO usados para conectar o ESP32 a cada ESC
-int ESCLPin = 16; //Pino para controlar o ESC da esquerda
-int ESCRPin = 17; //Pino para controlar o ESC da direita
-
-//Pinos dos sensores de borda
-int SLeftPin = 34;
-int SRightPin = 39;
-
-//Pinos GPIO usados para conectar o ESP32 a cada pino XSHUT dos sensores
-int SBorderLeftPin = 23;    //XSHUT do sensor da esquerda
-int SCenterPin = 19;  //XSHUT do sensor da frente
-int SRightPin = 18;   //XSHUT do sensor da direita
-
-//Variáveis que vão receber os valores lidos dos pinos dos sensores
-int distL;  //Valor lido pelo sensor da esquerda
-int distC;  //Valor lido pelo sensor da frente
-int distR;  //Valor lido pelo sensor da direita
-
-int distMax = 200;  //Distância máxima permitida como referência para os sensores (em milímetros)
-
-//Variáveis que receberão o valor da velocidades que serão enviadas para os ESC's
-int speedL; //Valor de velocidade para o ESC da esquerda
-int speedR; //Valor de velocidade para o ESC da direita
-
 String direction = ""; //Variável que indicará o sentido determinado pelos sensores
-String strategy = "simple"; //Por enquanto, eu estou escrevendo no código, depois vai ser decidido de acordo com o controle do Juiz
+int strategy = 0; //Por enquanto, eu estou escrevendo no código, depois vai ser decidido de acordo com o controle do 
+//0 = simples
+//1 = meialua
+//2 = meialua em s
 
 /*
  * No momento em que a placa é alimentada, é necessário que o valor enviado aos ESC's seja o valor 0 (zero)
@@ -60,23 +43,23 @@ void setup(){
   //Iniciando o endereçamento dos sensores
   Wire.begin();
   
-  pinMode(SLeftPin, OUTPUT);
-  pinMode(SCenterPin, OUTPUT);
-  pinMode(SRightPin, OUTPUT);
+  pinMode(SDIST_L, OUTPUT);
+  pinMode(SDIST_C, OUTPUT);
+  pinMode(SDIST_R, OUTPUT);
 
-  digitalWrite(SLeftPin, LOW);
-  digitalWrite(SCenterPin, LOW);
-  digitalWrite(SRightPin, LOW);
+  digitalWrite(SDIST_L, LOW);
+  digitalWrite(SDIST_C, LOW);
+  digitalWrite(SDIST_R, LOW);
   
-  pinMode(SLeftPin, INPUT);
+  pinMode(SDIST_L, INPUT);
   sensorL.init(true);
   sensorL.setAddress((uint8_t)0x21); //endereço do sensor da esquerda
 
-  pinMode(SCenterPin, INPUT);
+  pinMode(SDIST_C, INPUT);
   sensorC.init(true);
   sensorC.setAddress((uint8_t)0x23); //endereço do sensor da frente
 
-  pinMode(SRightPin, INPUT);
+  pinMode(SDIST_R, INPUT);
   sensorR.init(true);
   sensorR.setAddress((uint8_t)0x25); //endereço do sensor da direita
 
@@ -86,9 +69,9 @@ void setup(){
   
   //Configurando o sinal PWM que será enviado aos ESC's
   ESCL.setPeriodHertz(50);             // Estabelece a frequência do PWM (50Hz)
-  ESCL.attach(ESCLPin, 1000,2000);     // (Pino onde será enviado o sinal, largura de pulso mínima, largura de pulso máxima)
+  ESCL.attach(MOTOR_L, 1000,2000);     // (Pino onde será enviado o sinal, largura de pulso mínima, largura de pulso máxima)
   ESCR.setPeriodHertz(50);              
-  ESCR.attach(ESCRPin, 1000,2000);     
+  ESCR.attach(MOTOR_R, 1000,2000);     
   /*                                      
    * É necessário estabelecer uma faixa de largura de pulso para que o ESC
    * responda corretamente a variação do sinal analógico lido do potenciômetro
@@ -136,37 +119,37 @@ void simpleStrategy() {
 //Condições dessa estratégia:
 //O robô já começa virado e com uma certa distância da borda (a decidir pelos testes #TODO)
 //O robô n pensa, só acelera em meia lua!
-void meiaLua {
+void meiaLua() {
   //TODO: testar o tempo que o robô demora pra percorrer metade da arena e qual a melhor vel
-  for (const timer = 0; timer < 1000 * 1; timer++) {
+  for (int timer = 0; timer < 1000 * 1; timer++) {
     speedL = map(25, 0, 100, 0, 180);
     speedR = map(100, 0, 100, 0, 180);
     ESCL.write(speedL); 
     ESCR.write(speedR); 
   }
   flag = 1; //Considera que o inimigo deve estar na esquerda pois atacou pela direita
-  strategy = 'simple'; //Retorna pra estratégia padrão caso o ataque inicial não tenha dado certo
+  strategy = 0; //Retorna pra estratégia padrão caso o ataque inicial não tenha dado certo
 }
 
 //Condições dessa estratégia:
 //O robô comseça virado pro inimigo e dá uma voltinha pra poder fazer a meia lua
 //O robô n pensa, só acelera em meia lua!
-void meiaLuaEmS {
+void meiaLuaEmS() {
   //TODO: testar o tempo que o robô demora pra percorrer metade da arena e qual a melhor vel
-  for (const timer = 0; timer < 1000 * 0.25; timer++) {
+  for (int timer = 0; timer < 1000 * 0.25; timer++) {
     speedL = map(100, 0, 100, 0, 180);
     speedR = map(25, 0, 100, 0, 180);
     ESCL.write(speedL); 
     ESCR.write(speedR); 
   }
-  for (const timer = 0; timer < 1000 * 0.75; timer++) {
+  for (int timer = 0; timer < 1000 * 0.75; timer++) {
     speedL = map(25, 0, 100, 0, 180);
     speedR = map(100, 0, 100, 0, 180);
     ESCL.write(speedL); 
     ESCR.write(speedR); 
   }
   flag = 1; //Considera que o inimigo deve estar na esquerda pois atacou pela direita
-  strategy = 'simple'; //Retorna pra estratégia padrão caso o ataque inicial não tenha dado certo
+  strategy = 0; //Retorna pra estratégia padrão caso o ataque inicial não tenha dado certo
 }
  
 void loop() {
@@ -187,13 +170,13 @@ void loop() {
   }
   
   switch(strategy) {
-    case "simple":
+    case 0:
       simpleStrategy();
       break;
-    case "meiaLua":
+    case 1:
       meiaLua();
       break;
-    case "meiaLuaEmS":
+    case 2:
       meiaLuaEmS();
       break;
     default:
