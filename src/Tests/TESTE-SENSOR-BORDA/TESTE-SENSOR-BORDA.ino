@@ -5,8 +5,6 @@ int RBorder_L = 0;
 int RBorder_R = 0;
 
 void setup() {
-  pinMode(SBORDER_L, OUTPUT);
-  pinMode(SBORDER_R, OUTPUT);
   Serial.begin (9600);
 }
 
