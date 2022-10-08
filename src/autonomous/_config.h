@@ -27,14 +27,3 @@
 #define ANALOG_2 26
 #define ANALOG_3 32
 #define ANALOG_4 33
-
-//Variáveis que vão receber os valores lidos dos pinos dos sensores
-int distL;  //Valor lido pelo sensor da esquerda
-int distC;  //Valor lido pelo sensor da frente
-int distR;  //Valor lido pelo sensor da direita
-
-int distMax = 200;  //Distância máxima permitida como referência para os sensores (em milímetros)
-
-//Variáveis que receberão o valor da velocidades que serão enviadas para os ESC's
-int speedL; //Valor de velocidade para o ESC da esquerda
-int speedR; //Valor de velocidade para o ESC da direita
