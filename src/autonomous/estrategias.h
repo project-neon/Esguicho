@@ -10,6 +10,7 @@
 Servo ESCL; //ESC que controla o motor da esquerda
 Servo ESCR; //ESC que controla o motor da direita
 
+int refSpeed = 100;
 //Cria os objetos para cada sensor
 VL53L0X sensorL;  //Sensor da esquerda
 VL53L0X sensorC;  //Sensor da frente
@@ -50,31 +51,31 @@ void simpleStrategy() {
     direction = "COND. INICIAL";
   }
   else if (distR < distMax && distC < distMax && distL >= distMax){
-    speedL = 100;
+    speedL = refSpeed;
     speedR = 30;
     direction = "FRENTE + DIR";
     flag = 0;
   } 
   else if(distR >= distMax && distC < distMax && distL < distMax){
     speedL = 30;
-    speedR = 100;
+    speedR = refSpeed;
     direction = "FRENTE + ESQ";
     flag = 1;
   } 
   else if(distC >= distMax && distL >= distMax && (distR < distMax || flag == 0)){
-    speedL = 100;
-    speedR = -100;
+    speedL = refSpeed;
+    speedR = -1*refSpeed;
     direction = "DIREITA";
     flag = 0;
   } else if(distR >= distMax && distC >= distMax && (distL < distMax || flag == 1)){
-    speedL = -100;
-    speedR = 100;
+    speedL = -1*refSpeed;
+    speedR = refSpeed;
     direction = "ESQUERDA";
     flag = 1;
   } 
     else if(distC < distMax){
-    speedL = 100;
-    speedR = 100;
+    speedL = refSpeed;
+    speedR = refSpeed;
     direction = "FRENTE";
   }   
   else{
@@ -91,8 +92,8 @@ void meiaLua() {
   direction = "meia lua";
   //TODO: testar o tempo que o robô demora pra percorrer metade da arena e qual a melhor vel
   timer++;
-  speedL = 25;
-  speedR = 100; 
+  speedL = 0.25*refSpeed;
+  speedR = refSpeed; 
    
   if(timer > 1000 * 1){
     strategy = 0;
@@ -108,13 +109,13 @@ void meiaLua() {
 void meiaLuaEmS() {
   direction = "meia lua em S";
   timer++;
-  speedL = 100;
-  speedR = 25;
+  speedL = refSpeed;
+  speedR = 0.25*refSpeed;
 
   if(timer > 1000 * 0.25){
     
-    speedL = 25;
-    speedR = 100;
+    speedL = 0.25*refSpeed;
+    speedR = refSpeed;
     
     if(timer > 1000 *0.75){
       strategy = 0;
