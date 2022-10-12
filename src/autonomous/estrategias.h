@@ -29,7 +29,8 @@ int speedR; //Valor de velocidade para o ESC da direita
 
 String direction = ""; //Variável que indicará o sentido determinado pelos sensores
 
-int timer = 0;
+int currentTime = 0;
+int startTime = 0;
 
 int strategy = -1; //Por enquanto, eu estou escrevendo no código, depois vai ser decidido de acordo com o controle do 
 //0 = simples
@@ -91,16 +92,16 @@ void simpleStrategy() {
 void meiaLua() {
   direction = "meia lua";
   //TODO: testar o tempo que o robô demora pra percorrer metade da arena e qual a melhor vel
-  timer++;
-  speedL = 0.25*refSpeed;
-  speedR = refSpeed; 
-   
-  if(timer > 1000 * 1){
+  currentTime = millis();
+
+  if (startTime == 0) startTime = currentTime;
+  else if (currentTime - startTime >= 1000) {
     strategy = 0;
-    timer = 0;
     flag = 1; //Considera que o inimigo deve estar na esquerda pois atacou pela direita
   }
-  
+  speedL = 0.25*refSpeed;
+  speedR = refSpeed; 
+ 
 }
 
 //Condições dessa estratégia:
@@ -108,20 +109,20 @@ void meiaLua() {
 //O robô n pensa, só acelera em meia lua!
 void meiaLuaEmS() {
   direction = "meia lua em S";
-  timer++;
-  speedL = refSpeed;
-  speedR = 0.25*refSpeed;
+  //TODO: testar o tempo que o robô demora pra percorrer metade da arena e qual a melhor vel
+  currentTime = millis();
 
-  if(timer > 1000 * 0.25){
-    
+  if (startTime == 0) startTime = currentTime;
+  if (currentTime - startTime <= 1000* 0.25) {
+    speedL = refSpeed;
+    speedR = 0.25*refSpeed;
+  } else if (currentTime - startTime <= 1000* 0.75) {
     speedL = 0.25*refSpeed;
     speedR = refSpeed;
-    
-    if(timer > 1000 *0.75){
-      strategy = 0;
-      timer = 0;
-      flag = 1;
-    }
+  }
+  else {
+    strategy = 0;
+    flag = 1; //Considera que o inimigo deve estar na esquerda pois atacou pela direita
   }
 }
   //TODO: testar o tempo que o robô demora pra percorrer metade da arena e qual a melhor vel
