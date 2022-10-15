@@ -33,6 +33,9 @@ int distR;  //Valor lido pelo sensor da direita
 
 int DistDif;
 
+unsigned long contador = millis();
+long intervalo = 100;
+
 void setup(){
   
   Serial.begin(115200);
@@ -85,14 +88,14 @@ void loop() {
   distL = sensorL.readRangeSingleMillimeters();
   distC = sensorC.readRangeSingleMillimeters();
   distR = sensorR.readRangeSingleMillimeters(); 
-
-  if((distL > 60000) or (distC > 60000) or (distR > 60000)) {
-      digitalWrite(2, HIGH);
-    }
-    else{
-      digitalWrite(2, LOW);
-    }
-    
+  if(stage == 0){
+    if((distL > 60000) or (distC > 60000) or (distR > 60000)) {
+        digitalWrite(2, HIGH);
+      }
+      else{
+        digitalWrite(2, LOW);
+      }
+  }
   if(distL > 600){
       distL = 600;
     }
@@ -104,7 +107,21 @@ void loop() {
     }
     
   juiz();
-  
+
+  if(stage == 1){
+    if((millis() - contador) < 300){
+    // Acende o led do pino 2
+    digitalWrite(2, HIGH);
+    }
+    else{
+      // Apaga o led do pino 2
+      digitalWrite(2, LOW);
+    }
+    // Verifica se já passou 600 milisegundos
+      if((millis() - contador) > 600){
+        contador = millis();
+  }
+  }
   ///////////////////////////////////////////////////////////////////////////////////////
   if(stage == 2){
     if(distL <= distR){
