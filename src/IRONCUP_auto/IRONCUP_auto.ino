@@ -1,7 +1,7 @@
 //Bibliotecas internas
 #include "estrategias.h"
-#include <ESP32Servo.h> //Comunicação com a ESC de cada motor
-#include <VL53L0X.h>    //sensores de distância
+#include <ESP32Servo.h> //Comunicação com a ESC de cada motor v0.11.0
+#include <VL53L0X.h>    //sensores de distância v1.3.1
 
 int distMax = 600;  //Distância máxima permitida como referência para os sensores (em milímetros)
 int distAtk = 139;

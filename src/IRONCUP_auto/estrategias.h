@@ -1,6 +1,6 @@
 //Bibliotecas externas
 #include <Wire.h>       //Auxiliar dos sensores
-#include <IRremote.hpp>
+#include <IRremote.hpp> //InfraRed - Controle juiz v3.9.0
 
 //Bibliotecas internas
 #include "_config.h"
