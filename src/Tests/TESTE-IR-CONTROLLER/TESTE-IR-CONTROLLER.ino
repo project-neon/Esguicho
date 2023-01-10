@@ -15,7 +15,8 @@ void setup() {
  
 void loop() {
   if (irrecv.decode(&results)) {
-    Serial.println(results.value, HEX); //Verifica o valor lido pelo controle
+    //Serial.println(results.value, HEX); //Verifica o valor lido pelo controle
+    Serial.println(results.value); //Verifica o valor lido pelo controle
     irrecv.resume();
   }
 }

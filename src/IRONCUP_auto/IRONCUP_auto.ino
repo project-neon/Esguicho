@@ -1,41 +1,6 @@
 //Bibliotecas internas
 #include "estrategias.h"
-#include <ESP32Servo.h> //Comunicação com a ESC de cada motor v0.11.0
-#include <VL53L0X.h>    //sensores de distância v1.3.1
-
-int distMax = 600;  //Distância máxima permitida como referência para os sensores (em milímetros)
-int distAtk = 139;
-
-int speedMax = 100; //vel max
-int searchSpeed = 60;//vel de girar no proprio eixo
-int aproxSpeed = 25;//vel ao se aproximar do oponente
-int timeApproaching = 0;
-
-int flag = 0; //Direita --> 1, Esquerda --> -1, Valor inicial --> 0
-
-//Cria os objetos para  cada ESC
-Servo ESCL; //ESC que controla o motor da esquerda
-Servo ESCR; //ESC que controla o motor da direita
-
-//Cria os objetos para cada sensor
-VL53L0X sensorL;  //Sensor da esquerda
-VL53L0X sensorC;  //Sensor da frente
-VL53L0X sensorR;  //Sensor da direita
-
-
-//Variáveis que receberão o valor da velocidades que serão enviadas para os ESC's
-int speedL = 0; //Valor de velocidade para o ESC da esquerda
-int speedR = 0; //Valor de velocidade para o ESC da direita
-
-//Variáveis que vão receber os valores lidos dos pinos dos sensores
-int distL;  //Valor lido pelo sensor da esquerda
-int distC;  //Valor lido pelo sensor da frente
-int distR;  //Valor lido pelo sensor da direita
-
-int DistDif;
-
-unsigned long contador = millis();
-long intervalo = 100;
+#include "variables_declaration.h"
 
 void setup(){
   
@@ -104,77 +69,30 @@ void loop() {
     
   juiz();
 
-  if(stage == 1){
-    if((millis() - contador) < 300){
-      digitalWrite(2, HIGH); // Acende o led do pino 2
-    }
-    else{
-      digitalWrite(2, LOW); // Apaga o led do pino 2
-    }
-    // Verifica se já passou 600 milisegundos
-    if((millis() - contador) > 600){
-      contador = millis();
-    }
+  if(stage == 1) {
+    if((millis() - contador) < 300) digitalWrite(2, HIGH); // Acende o led do pino 2
+    else digitalWrite(2, LOW); // Apaga o led do pino 2
+    if((millis() - contador) > 600) contador = millis(); // Verifica se já passou 600 milisegundos
+    speedL = 0;
+    speedR = 0;
   }
   ///////////////////////////////////////////////////////////////////////////////////////
-  if(stage == 2){
-    if(distL <= distR){
-      flag = -1; //flag para a esquerda
-    }
-    else{
-      flag = 1;  //flag para a direita
-    }
-
+  else if(stage == 2) {
     //inicio das decisões
-    if(distC < distAtk or (distL < distAtk and distR < 119)){
-      Serial.print("ATACANDO ");
-      speedL = speedMax;
-      speedR = speedMax;
+    if(distC < 100 or (distL < distAtk and distR < distAtk)){
+      Serial.print("ATACANDO \t\t");
+      speedL = speedR = speedMax;
     }
-
-    else if (distL < distAtk){
-      Serial.print("ESQUERDA ");
-      speedL = aproxSpeed*0.3;
-      speedR = aproxSpeed;
+    else if (distL < distAtk or distR < distAtk){
+      (distL < distAtk) ? Serial.print("ESQ \t\t") : Serial.print("DIR \t\t");
+      speedL = (distL < distAtk) ? speedMax*0.3 : speedMax;
+      speedR = (distL < distAtk) ? speedMax : speedMax*0.3;
+      flag = (distL < distAtk) ? -1 : 1;
     }
-    else if (distR < 119){
-      Serial.print("DIREITA ");
-      speedL = aproxSpeed;
-      speedR = aproxSpeed*0.3;
-    }
-    else if(distC < distMax){
-      if (timeApproaching < 10)Serial.print("APROXIMANDO ");
-      timeApproaching++;
-
-      if (timeApproaching > 10){
-        Serial.print("RODANDO ");
-        speedL = aproxSpeed * (-1);
-        speedR = aproxSpeed;
-      }
-      else {
-        //Anda devagar para frente
-        speedL = aproxSpeed;
-        speedR = aproxSpeed;
-      }
-    }
-    
     else{
-      Serial.println("PROCURANDO");
-      /*
-      if (flag == -1){
-        Serial.print("PROCURANDO ");
-        //oponente a esquerda
-        speedL = -1*searchSpeed;
-        speedR = searchSpeed;
-      }
-      else{
-        //oponente a direita
-        speedL = searchSpeed;
-        speedR = -1*searchSpeed;
-      }
-      */
-      speedL = flag * searchSpeed * (0);
-      speedR = flag * searchSpeed * (-1);
+      (flag == -1) ? Serial.print("PROCURANDO ESQ \t\t") :  Serial.print("PROCURANDO DIR \t\t");;
+      speedL = (flag == -1) ? -1*searchSpeed : searchSpeed;
+      speedR = (flag == -1) ? searchSpeed : -1*searchSpeed;
     }
   }
   //fim das decisões
