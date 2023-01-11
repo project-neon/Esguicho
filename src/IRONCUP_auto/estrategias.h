@@ -2,9 +2,6 @@
 #include <Wire.h>       //Auxiliar dos sensores
 #include <IRremote.hpp> //InfraRed - Controle juiz v3.9.0
 
-//Bibliotecas internas
-#include "_config.h"
-
 // -- Controle Ana -- //
 const int I1 = 551520375;
 const int I2 = 551504055;

@@ -1,6 +1,9 @@
 //Bibliotecas internas
+#include "_config.h"
 #include "estrategias.h"
 #include "variables_declaration.h"
+#include "distance_sensors.h"
+#include "utils.h"
 
 void setup(){
   
@@ -12,29 +15,7 @@ void setup(){
   pinMode(JCONTROLLER, INPUT);
   pinMode(2, OUTPUT);
    
-  pinMode(SDIST_L, OUTPUT);
-  pinMode(SDIST_C, OUTPUT);
-  pinMode(SDIST_R, OUTPUT);
-
-  digitalWrite(SDIST_L, LOW);
-  digitalWrite(SDIST_C, LOW);
-  digitalWrite(SDIST_R, LOW);
-  
-  pinMode(SDIST_L, INPUT);
-  sensorL.init(true);
-  sensorL.setAddress((uint8_t)0x21); //endereço do sensor da esquerda
-
-  pinMode(SDIST_C, INPUT);
-  sensorC.init(true);
-  sensorC.setAddress((uint8_t)0x23); //endereço do sensor da frente
-
-  pinMode(SDIST_R, INPUT);
-  sensorR.init(true);
-  sensorR.setAddress((uint8_t)0x25); //endereço do sensor da direita
-
-  sensorL.setTimeout(100);
-  sensorC.setTimeout(100);
-  sensorR.setTimeout(100);
+  sensorsInit();
   
   //Configurando o sinal PWM que será enviado aos ESC's
   ESCL.setPeriodHertz(50);             // Estabelece a frequência do PWM (50Hz)
@@ -73,8 +54,6 @@ void loop() {
     if((millis() - contador) < 300) digitalWrite(2, HIGH); // Acende o led do pino 2
     else digitalWrite(2, LOW); // Apaga o led do pino 2
     if((millis() - contador) > 600) contador = millis(); // Verifica se já passou 600 milisegundos
-    speedL = 0;
-    speedR = 0;
   }
   ///////////////////////////////////////////////////////////////////////////////////////
   else if(stage == 2) {
@@ -94,39 +73,18 @@ void loop() {
       speedL = (flag == -1) ? -1*searchSpeed : searchSpeed;
       speedR = (flag == -1) ? searchSpeed : -1*searchSpeed;
     }
+
+    EscSpeedL = map(speedL, -100, 100, 0, 180);
+    EscSpeedR = map(speedR, -100, 100, 0, 180);
+
+    //TODO: Ver se funciona
+    ESCL.write(EscSpeedL); 
+    ESCR.write(EscSpeedR);
   }
   //fim das decisões
   /////////////////////////////////////////////////////////////////////////////////////////////
-  
-  else{
-    speedL = 0;
-    speedR = 0;
-  }
-  
-  // Mostra o valor que será enviado ao map
-  Serial.print("speedL: ");
-  Serial.print(speedL);
-  Serial.print("\t");
-  Serial.print("speedR: ");
-  Serial.print(speedR); 
-  Serial.print("\t\t");
-  
-  speedL = map(speedL, -100, 100, 0, 180);
-  speedR = map(speedR, -100, 100, 0, 180);
-  ESCL.write(speedL); 
-  ESCR.write(speedR);
-  
- 
 
+  printSpeed();
+  printDistances();
   
-  // Mostra o valor de cada sensor na tela e a decisão escolhida
-  Serial.print("L: ");
-  Serial.print(distL);
-  Serial.print("\t");
-  Serial.print("C: ");
-  Serial.print(distC);
-  Serial.print("\t");
-  Serial.print("R: ");
-  Serial.print(distR);
-  Serial.println("\t\t");
 }
