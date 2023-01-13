@@ -24,9 +24,15 @@ int stage = 0;
 IRrecv irrecv(JCONTROLLER);
 decode_results results;
 
+void controllerInit() {
+  //Iniciando o endereçamento dos sensores
+  Wire.begin();
+  irrecv.enableIRIn(); // Start the receiver
+  pinMode(JCONTROLLER, INPUT);
+  pinMode(2, OUTPUT);
+}
 
-
-void juiz() {
+void controllerIR() {
   if (irrecv.decode(&results)) {
     valueIR = (results.value);
     Serial.print("valueIR: ");

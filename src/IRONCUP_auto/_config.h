@@ -1,10 +1,10 @@
+//TODO: Mudar o nome do arquivo pra pinout.h?
 #include <Arduino.h>
 
 //motors (left, right)
 #define MOTOR_L 16
 #define MOTOR_R 17
 
-//TODO: Definir sensor left, middle, right
 //Distance sensors (left, middle, right)
 #define SDIST_L 18
 #define SDIST_C 19

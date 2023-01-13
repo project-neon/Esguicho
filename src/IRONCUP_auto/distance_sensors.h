@@ -1,8 +1,5 @@
 #include <VL53L0X.h>    //sensores de distância v1.3.1
 
-int distMax = 600;  //Distância máxima permitida como referência para os sensores (em milímetros)
-int distAtk = 400;
-
 //Cria os objetos para cada sensor
 VL53L0X sensorL;  //Sensor da esquerda
 VL53L0X sensorC;  //Sensor da frente
@@ -37,5 +34,23 @@ void sensorsInit() {
     sensorL.setTimeout(100);
     sensorC.setTimeout(100);
     sensorR.setTimeout(100);  
+}
 
+void distanceRead() {
+    //Armazena os valores lidos nas respectivas variáveis 
+    distL = sensorL.readRangeSingleMillimeters();
+    distC = sensorC.readRangeSingleMillimeters();
+    distR = sensorR.readRangeSingleMillimeters(); 
+    if(stage == 0){
+        if((distL > 60000) or (distC > 60000) or (distR > 60000)) {
+        digitalWrite(2, HIGH);
+        }
+        else{
+        digitalWrite(2, LOW);
+        }
+    }
+    
+    if(distL > 600) distL = 600;
+    if(distC > 600) distC = 600;
+    if(distR > 600) distR = 600;
 }
