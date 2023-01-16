@@ -30,7 +30,11 @@ void loop() {
   ///////////////////////////////////////////////////////////////////////////////////////
   else if(stage == 2) {
     //inicio das decisões
-    if(distC < 100 or (distL < distAtk and distR < distAtk)){
+    if(distL < distAtkMax and distR < distAtkMax){
+      Serial.print("ATACANDO MÁX \t\t");
+      speedL = speedR = speedATK;
+    }
+    else if(distC < 100 or (distL < distAtk and distR < distAtk)){
       Serial.print("ATACANDO \t\t");
       speedL = speedR = speedMax;
     }
@@ -51,6 +55,11 @@ void loop() {
   }
   //fim das decisões
   /////////////////////////////////////////////////////////////////////////////////////////////
+  else {
+    speedL = speedR = 0;
+    motorsOutput();
+  }
+
 
   printSpeed();
   printDistances();

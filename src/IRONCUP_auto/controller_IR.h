@@ -3,20 +3,20 @@
 #include <IRremote.hpp> //InfraRed - Controle juiz v3.9.0
 
 // -- Controle Ana -- //
-const int I1 = 551520375;
-const int I2 = 551504055;
-const int I3 = 551536695;
-const int I4 = 551495895;
-const int I5 = 551528535;
-const int I6 = 551512215;
+// const int I1 = 551520375;
+// const int I2 = 551504055;
+// const int I3 = 551536695;
+// const int I4 = 551495895;
+// const int I5 = 551528535;
+// const int I6 = 551512215;
 
 // -- Controle Competicao -- //
-// const int I1 = 16;
-// const int I2 = 2064;
-// const int I3 = 1040;
-// const int I4 = 3088;
-// const int I5 = 528;
-// const int I6 = 2576;
+const int I1 = 16;
+const int I2 = 2064;
+const int I3 = 1040;
+const int I4 = 3088;
+const int I5 = 528;
+const int I6 = 2576;
 
 int valueIR = 0;
 int stage = 0;

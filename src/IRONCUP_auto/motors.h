@@ -23,6 +23,8 @@ void motorsInit() {
     * O valor da largura de pulso deve ser informado na escala de micro-segundos
     * No caso, a largura de pulso do PWM mínima é de 1000us e a máxima é de 2000us                                      
     */
+    ESCL.write(90); 
+    ESCR.write(90);
 }
 
 void motorsOutput() {
