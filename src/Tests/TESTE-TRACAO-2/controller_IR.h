@@ -9,11 +9,6 @@ const int I3 = 551536695;
 const int I4 = 551495895;
 const int I5 = 551528535;
 const int I6 = 551512215;
-const int I7 = 551544855;
-const int I8 = 551491815;
-const int I9 = 551524455;
-const int I0 = 551487735;
-
 
 // -- Controle Competicao -- //
 // const int I1 = 16;
@@ -24,7 +19,10 @@ const int I0 = 551487735;
 // const int I6 = 2576;
 
 int valueIR = 0;
-int stage = 0;
+int contador = 0;
+int numeroPiscadas = 0;
+int guardaVelocidade = 0;
+bool go = false;
 
 IRrecv irrecv(JCONTROLLER);
 decode_results results;
@@ -44,24 +42,43 @@ void controllerIR() {
     Serial.println(valueIR);
     switch(valueIR)
     {
+      case (I1 or I2 or I3  or I4  or I5  or I6):
+        contador = millis();
       case I1:
-        if(stage == 0)
-        {
-          Serial.println("primeiro");  
-          stage = 1;
-        }
+        Serial.println("20");  
+        speedL = speedR = numeroPiscadas = 20;
         break;
       case I2:
-        if(stage == 1)
-        {
-          Serial.println("segundo");
-          stage = 2;
-        }
+        Serial.println("40");
+        speedL = speedR = numeroPiscadas = 40;
         break;
       case I3:
-            Serial.println("MORREU");  
-            stage = -10;
+        Serial.println("60");  
+        speedL = speedR = numeroPiscadas = 60;
         break;
+      case I4:
+        Serial.println("80");  
+        speedL = speedR = numeroPiscadas = 80;
+        break;
+      case I5:
+        Serial.println("100");  
+        speedL = speedR = numeroPiscadas = 100;
+        break;
+      case I6:
+        Serial.println("Inicia/para");  
+        if (go) {
+          guardaVelocidade = speedL;
+          speedL = speedR = 0;
+          go = false;
+          motorsOutput();
+          Serial.println("PAROU!");
+          speedL = speedR = guardaVelocidade;
+        } else {
+          go = true;
+        }
+        break; 
+      default:
+       break;
     }
     irrecv.resume();
   }

@@ -4,21 +4,25 @@
 #include "motors.h"
 
 // -- Controle Ana -- //
-// const int I1 = 551520375;
-// const int I2 = 551504055;
-// const int I3 = 551536695;
-// const int I4 = 551495895;
-// const int I5 = 551528535;
-// const int I6 = 551512215;
+const int I1 = 551520375;
+const int I2 = 551504055;
+const int I3 = 551536695;
+const int I4 = 551495895;
+const int I5 = 551528535;
+const int I6 = 551512215;
+const int I7 = 551544855;
+const int I8 = 551491815;
+const int I9 = 551524455;
+const int I0 = 551487735;
 
 // -- Controle Competicao -- //
-const int I1 = 16;
-const int I2 = 2064;
-const int I3 = 1040;
-const int I4 = 3088;
-const int I5 = 528;
-const int I6 = 2576;
-const int I7 = 5152;
+// const int I1 = 16;
+// const int I2 = 2064;
+// const int I3 = 1040;
+// const int I4 = 3088;
+// const int I5 = 528;
+// const int I6 = 2576;
+// const int I7 = 5152;
 
 int contador_led = 0;
 int numero_piscadas = 0;
