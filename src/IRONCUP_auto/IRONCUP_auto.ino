@@ -32,22 +32,43 @@ void loop() {
     //inicio das decisões
     if(distL < distAtkMax and distR < distAtkMax){
       Serial.print("ATACANDO MÁX \t\t");
-      speedL = speedR = speedATK;
+      speedL = speedR = speedMax;
     }
     else if(distC < 100 or (distL < distAtk and distR < distAtk)){
       Serial.print("ATACANDO \t\t");
-      speedL = speedR = speedMax;
+      speedL = speedR = speedStandard;
     }
     else if (distL < distAtk or distR < distAtk){
       (distL < distAtk) ? Serial.print("ESQ \t\t") : Serial.print("DIR \t\t");
-      speedL = (distL < distAtk) ? speedMax*0.3 : speedMax;
-      speedR = (distL < distAtk) ? speedMax : speedMax*0.3;
+      speedL = (distL < distAtk) ? speedStandard*0.3 : speedStandard;
+      speedR = (distL < distAtk) ? speedStandard : speedStandard*0.3;
       flag = (distL < distAtk) ? -1 : 1;
     }
     else{
-      (flag == -1) ? Serial.print("PROCURANDO ESQ \t\t") :  Serial.print("PROCURANDO DIR \t\t");;
-      speedL = (flag == -1) ? -1*searchSpeed : searchSpeed;
-      speedR = (flag == -1) ? searchSpeed : -1*searchSpeed;
+      ESCL.write(92); 
+      ESCR.write(92);
+      contadorL = 0;  
+      contadorR = 0;
+      saiuDoBreak = false;  
+      for(int i = 0; i < 500; i++) {             
+        
+        if(distL < distAtk) contadorL++;
+        else contadorL = 0;
+
+        if(distR < distAtk) contadorR++;
+        else contadorR = 0;
+        
+        if(contadorL >= 5 or contadorR >= 5) {
+          flag = contadorL >= 5 ? -1 : 1;
+          saiuDoBreak = true;
+          break;
+        }
+      }      
+      if (!saiuDoBreak) {
+        (flag == -1) ? Serial.print("PROCURANDO ESQ \t\t") :  Serial.print("PROCURANDO DIR \t\t");;
+        speedL = (flag == -1) ? -1*searchSpeed : searchSpeed;
+        speedR = (flag == -1) ? searchSpeed : -1*searchSpeed;
+      }
     }
 
     motorsOutput();

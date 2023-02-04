@@ -2,7 +2,11 @@ const int distMax = 600;  //Distância máxima permitida como referência para o
 const int distAtk = 400;
 const int distAtkMax = 200;
 
-const int speedMax = 30; //vel max
-const int speedATK = 100; //vel max de atj
-const int searchSpeed = speedMax*0.6;//vel de girar no proprio eixo
-const int aproxSpeed = speedMax*0.25;//vel ao se aproximar do oponente
+const int speedMax = 85; //vel max para ser usada durande o ataque
+const int speedStandard = 30; //vel padrão
+const int searchSpeed = speedStandard*0.6;//vel de girar no proprio eixo
+const int aproxSpeed = speedStandard*0.25;//vel ao se aproximar do oponente
+
+int contadorL = 0;  
+int contadorR = 0;
+bool saiuDoBreak = false;
