@@ -17,31 +17,62 @@ void setup(){
   motorsInit();
 }
 
-void verificaFlutuacao() {
+bool verificaFlutuacaoPositivoPraNegativo() {
   contadorL = 0;  
   contadorR = 0;
-  for(int i = 0; i < 200; i++) {             
-    if(distL < distAtk) contadorL++;
+  for(int i = 0; i < 1000; i++) {             
+    if(distL > distAtk) contadorL++;
     else contadorL = 0;
 
-    if(distR < distAtk) contadorR++;
+    if(distR > distAtk) contadorR++;
     else contadorR = 0;
     
     if(contadorL >= 20 or contadorR >= 20) {
       flag = contadorL >= 5 ? -1 : 1;
-      saiuDoBreak = true;
-      break;
+      return true;
     }
   } 
+  return false;
 }
 
-void atrasadorDeDecisoes() {
-  if (speedL > 0 and speedR > 0) {       
-         
-  }
-  else {
+bool verificaFlutuacaoNegativoPraPositivo() {
+  contador = 0;  
+  for(int i = 0; i < 1000; i++) {             
+    if(distL > distAtk) contadorL++;
+    // else contadkorL = 0;
+
+    if(distR > distAtk) contadorR++;
+    // else contadorR = 0;
     
+    if(contadorL >= 100 and contadorR >= 100) {
+      return true;
+    }
+  } 
+  return false;
+}
+
+void atrasadorDeDecisoesPositivo() {
+  if (speedL > 0 and speedR > 0) return;
+  else {
+    Serial.println("Essa flutuação é constante?");
+    if (verificaFlutuacaoPositivoPraNegativo()) {  
+      ESCL.write(92); 
+      ESCR.write(92);
+      delay(1000);    
+    }
   }
+}
+
+void atrasadorDeDecisoesNegativo() {
+  if (speedL > 0 and speedR > 0) {       
+    Serial.println("Essa flutuação é constante?");
+    if (verificaFlutuacaoNegativoPraPositivo()) {  
+      ESCL.write(92); 
+      ESCR.write(92);
+      delay(1000);    
+    }
+  }
+  else return;
 }
 
 void loop() {
@@ -58,26 +89,27 @@ void loop() {
   else if(stage == 2) {
     //inicio das decisões
     if(distL < distAtkMax and distR < distAtkMax){
+      atrasadorDeDecisoesPositivo();
       Serial.print("ATACANDO MÁX \t\t");
       speedL = speedR = speedMax;
     }
     else if(distC < 100 or (distL < distAtk and distR < distAtk)){
+      atrasadorDeDecisoesPositivo();
       Serial.print("ATACANDO \t\t");
       speedL = speedR = speedStandard;
     }
     else if (distL < distAtk or distR < distAtk){
+      atrasadorDeDecisoesPositivo();
       (distL < distAtk) ? Serial.print("ESQ \t\t") : Serial.print("DIR \t\t");
       speedL = (distL < distAtk) ? speedStandard*0.3 : speedStandard;
       speedR = (distL < distAtk) ? speedStandard : speedStandard*0.3;
       flag = (distL < distAtk) ? -1 : 1;
     }
     else{
-      Serial.println("Essa flutuação é constante?");
-      if (!saiuDoBreak) {
-        (flag == -1) ? Serial.print("PROCURANDO ESQ \t\t") :  Serial.print("PROCURANDO DIR \t\t");;
-        speedL = (flag == -1) ? -1*searchSpeed : searchSpeed;
-        speedR = (flag == -1) ? searchSpeed : -1*searchSpeed;
-      }
+      atrasadorDeDecisoesNegativo();
+      (flag == -1) ? Serial.print("PROCURANDO ESQ \t\t") :  Serial.print("PROCURANDO DIR \t\t");;
+      speedL = (flag == -1) ? -1*searchSpeed : searchSpeed;
+      speedR = (flag == -1) ? searchSpeed : -1*searchSpeed;
     }
 
     motorsOutput();

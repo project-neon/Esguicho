@@ -36,7 +36,7 @@ const int I0 = 1086304845;
 // const int I6 = 2576;
 
 int valueIR = 0;
-int stage = 0;
+int stage = 2;
 
 IRrecv irrecv(JCONTROLLER);
 decode_results results;
