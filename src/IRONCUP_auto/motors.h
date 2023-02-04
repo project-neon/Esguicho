@@ -24,7 +24,7 @@ void motorsInit() {
     * No caso, a largura de pulso do PWM mínima é de 1000us e a máxima é de 2000us                                      
     */
     ESCL.write(92); 
-    ESCR.write(92;
+    ESCR.write(92);
 }
 
 void motorsOutput() {

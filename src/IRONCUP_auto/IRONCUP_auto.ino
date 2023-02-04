@@ -17,6 +17,33 @@ void setup(){
   motorsInit();
 }
 
+void verificaFlutuacao() {
+  contadorL = 0;  
+  contadorR = 0;
+  for(int i = 0; i < 200; i++) {             
+    if(distL < distAtk) contadorL++;
+    else contadorL = 0;
+
+    if(distR < distAtk) contadorR++;
+    else contadorR = 0;
+    
+    if(contadorL >= 20 or contadorR >= 20) {
+      flag = contadorL >= 5 ? -1 : 1;
+      saiuDoBreak = true;
+      break;
+    }
+  } 
+}
+
+void atrasadorDeDecisoes() {
+  if (speedL > 0 and speedR > 0) {       
+         
+  }
+  else {
+    
+  }
+}
+
 void loop() {
 
   controllerIR();
@@ -45,25 +72,7 @@ void loop() {
       flag = (distL < distAtk) ? -1 : 1;
     }
     else{
-      ESCL.write(92); 
-      ESCR.write(92);
-      contadorL = 0;  
-      contadorR = 0;
-      saiuDoBreak = false;  
-      for(int i = 0; i < 500; i++) {             
-        
-        if(distL < distAtk) contadorL++;
-        else contadorL = 0;
-
-        if(distR < distAtk) contadorR++;
-        else contadorR = 0;
-        
-        if(contadorL >= 5 or contadorR >= 5) {
-          flag = contadorL >= 5 ? -1 : 1;
-          saiuDoBreak = true;
-          break;
-        }
-      }      
+      Serial.println("Essa flutuação é constante?");
       if (!saiuDoBreak) {
         (flag == -1) ? Serial.print("PROCURANDO ESQ \t\t") :  Serial.print("PROCURANDO DIR \t\t");;
         speedL = (flag == -1) ? -1*searchSpeed : searchSpeed;
