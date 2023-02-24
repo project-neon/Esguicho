@@ -15,25 +15,25 @@
 // const int I0 = 551487735;
 
 // -- Controle Matt -- //
-const int I1 = 1086290565;
-const int I2 = 1086306885;
-const int I3 = 1086290055;
-const int I4 = 1086280365;
-const int I5 = 1086296685;
-const int I6 = 1086279855;
-const int I7 = 1086282405;
-const int I8 = 1086298725;
-const int I9 = 1086281895;
-const int I0 = 1086304845;
+// const int I1 = 1086290565;
+// const int I2 = 1086306885;
+// const int I3 = 1086290055;
+// const int I4 = 1086280365;
+// const int I5 = 1086296685;
+// const int I6 = 1086279855;
+// const int I7 = 1086282405;
+// const int I8 = 1086298725;
+// const int I9 = 1086281895;
+// const int I0 = 1086304845;
 
 
 // -- Controle Competicao -- //
-// const int I1 = 16;
-// const int I2 = 2064;
-// const int I3 = 1040;
-// const int I4 = 3088;
-// const int I5 = 528;
-// const int I6 = 2576;
+const int I1 = 16;
+const int I2 = 2064;
+const int I3 = 1040;
+const int I4 = 3088;
+const int I5 = 528;
+const int I6 = 2576;
 
 int valueIR = 0;
 int stage = 2;

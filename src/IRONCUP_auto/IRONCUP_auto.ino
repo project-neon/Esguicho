@@ -17,62 +17,26 @@ void setup(){
   motorsInit();
 }
 
-bool verificaFlutuacaoPositivoPraNegativo() {
-  contadorL = 0;  
-  contadorR = 0;
-  for(int i = 0; i < 1000; i++) {             
-    if(distL > distAtk) contadorL++;
-    else contadorL = 0;
-
-    if(distR > distAtk) contadorR++;
-    else contadorR = 0;
-    
-    if(contadorL >= 20 or contadorR >= 20) {
-      flag = contadorL >= 5 ? -1 : 1;
-      return true;
-    }
-  } 
-  return false;
-}
-
-bool verificaFlutuacaoNegativoPraPositivo() {
-  contador = 0;  
-  for(int i = 0; i < 1000; i++) {             
-    if(distL > distAtk) contadorL++;
-    // else contadkorL = 0;
-
-    if(distR > distAtk) contadorR++;
-    // else contadorR = 0;
-    
-    if(contadorL >= 100 and contadorR >= 100) {
-      return true;
-    }
-  } 
-  return false;
-}
-
-void atrasadorDeDecisoesPositivo() {
-  if (speedL > 0 and speedR > 0) return;
-  else {
-    Serial.println("Essa flutuação é constante?");
-    if (verificaFlutuacaoPositivoPraNegativo()) {  
-      ESCL.write(92); 
-      ESCR.write(92);
-      delay(1000);    
-    }
+bool precisaParar(bool velEsqPositivaNova, bool velDirPositivaNova ) {
+  if (speedL == 0 and speedR == 0) return false; //Se a vel é 0, pode ir pra frente ou trás sem parar
+  
+  speedLPositiva = speedL > 5 ? true : false; //Adicionei uma margem para ficar de acordo com a de 84 ate 94 que vai pra esc
+  speedRPositiva = speedR > 5 ? true : false;
+  if ((speedLPositiva == velEsqPositivaNova) and (speedRPositiva == velDirPositivaNova)) {
+    if (contadorFLutuacoes > 0) contadorFLutuacoes--; //Pode ser que a gnt soh teve variacoes temporarias, entao a gnt vai tirando elas
+    return false; //Se o sentido q vai rodar é igual ao anterior, nao para!
   }
-}
 
-void atrasadorDeDecisoesNegativo() {
-  if (speedL > 0 and speedR > 0) {       
-    Serial.println("Essa flutuação é constante?");
-    if (verificaFlutuacaoNegativoPraPositivo()) {  
-      ESCL.write(92); 
-      ESCR.write(92);
-      delay(1000);    
-    }
+  contadorFLutuacoes++;
+  if (contadorFLutuacoes >= 10) { 
+    speedL = speedR = 0; // APenas para caso a gnt tenha tido flutuacoes seguidas o suficiente. 10 eh o bastante?
+    motorsOutput();
+    delay(100); //TODO: Podemos aumentar esse valor p/ ver no codigo mais claramente se ele para antes de mudar a direcao
+    contadorFLutuacoes = 0;
+    return false; //Retorna falso para o codigo nao fazer um return dentro do loop!
   }
-  else return;
+  return true;
+  
 }
 
 void loop() {
@@ -81,32 +45,33 @@ void loop() {
   distanceRead();
 
   if(stage == 1) {
-    if((millis() - contador) < 300) digitalWrite(2, HIGH); // Acende o led do pino 2
-    else digitalWrite(2, LOW); // Apaga o led do pino 2
-    if((millis() - contador) > 600) contador = millis(); // Verifica se já passou 600 milisegundos
+    if((millis() - contador) >= 300) {
+      digitalWrite(2, !digitalRead(2)); //Pisca o Led
+      contador = millis();
+    }
   }
   ///////////////////////////////////////////////////////////////////////////////////////
   else if(stage == 2) {
     //inicio das decisões
-    if(distL < distAtkMax and distR < distAtkMax){
-      atrasadorDeDecisoesPositivo();
+    if(distL < distAtkMax and distR < distAtkMax) {
+      if (precisaParar(true,true)) return;
       Serial.print("ATACANDO MÁX \t\t");
       speedL = speedR = speedMax;
     }
-    else if(distC < 100 or (distL < distAtk and distR < distAtk)){
-      atrasadorDeDecisoesPositivo();
+    else if(distC < 100 or (distL < distAtk and distR < distAtk)) {
+      if (precisaParar(true,true)) return;
       Serial.print("ATACANDO \t\t");
       speedL = speedR = speedStandard;
     }
-    else if (distL < distAtk or distR < distAtk){
-      atrasadorDeDecisoesPositivo();
+    else if (distL < distAtk or distR < distAtk) {
+      if (precisaParar(true,true)) return;
       (distL < distAtk) ? Serial.print("ESQ \t\t") : Serial.print("DIR \t\t");
       speedL = (distL < distAtk) ? speedStandard*0.3 : speedStandard;
       speedR = (distL < distAtk) ? speedStandard : speedStandard*0.3;
       flag = (distL < distAtk) ? -1 : 1;
     }
-    else{
-      atrasadorDeDecisoesNegativo();
+    else {
+      if (precisaParar(flag == -1, flag != -1)) return;
       (flag == -1) ? Serial.print("PROCURANDO ESQ \t\t") :  Serial.print("PROCURANDO DIR \t\t");;
       speedL = (flag == -1) ? -1*searchSpeed : searchSpeed;
       speedR = (flag == -1) ? searchSpeed : -1*searchSpeed;

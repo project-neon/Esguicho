@@ -11,6 +11,9 @@ int speedR = 0; //Valor de velocidade da direita
 int EscSpeedL = 0; //Valor de velocidade para o ESC da esquerda
 int EscSpeedR = 0; //Valor de velocidade para o ESC da direita
 
+bool speedLPositiva = true; //Valor de velocidade para o ESC da esquerda
+bool speedRPositiva = true; //Valor de velocidade para o ESC da direita
+
 void motorsInit() {
     //Configurando o sinal PWM que será enviado aos ESC's
     ESCL.setPeriodHertz(50);             // Estabelece a frequência do PWM (50Hz)
@@ -31,7 +34,9 @@ void motorsOutput() {
     EscSpeedL = map(speedL, -100, 100, 0, 180);
     EscSpeedR = map(speedR, -100, 100, 0, 180);
 
-    //TODO: Ver se funciona
+    if (EscSpeedL > 84 and EscSpeedL < 94) EscSpeedL = 92; //Deixei 92 pq o 90 estava dando problema uma epoca
+    if (EscSpeedR > 84 and EscSpeedR < 94) EscSpeedR = 92;
+
     ESCL.write(EscSpeedL); 
     ESCR.write(EscSpeedR);
 }
