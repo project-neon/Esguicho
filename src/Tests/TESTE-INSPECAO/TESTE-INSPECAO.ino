@@ -20,9 +20,12 @@ void loop() {
     if((millis() - contador) > 600) contador = millis(); // Verifica se já passou 600 milisegundos
   }
   else if(stage == 2) {
-    speedL = speedR = 50;
+    digitalWrite(2, HIGH);
+    speedL = 50;
+    speedR = -50;
     motorsOutput();
   } else {
+    digitalWrite(2, LOW);
     speedL = speedR = 0;
     motorsOutput();
   }
@@ -31,5 +34,5 @@ void loop() {
   Serial.print("\t");
   Serial.print("speedR: ");
   Serial.print(speedR); 
-  Serial.print("\t\t");
+  Serial.println("\t\t");
 }
