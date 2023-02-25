@@ -21,8 +21,8 @@ void loop() {
   }
   else if(stage == 2) {
     digitalWrite(2, HIGH);
-    speedL = 50;
-    speedR = -50;
+    speedL = 60;
+    speedR = 60;
     motorsOutput();
   } else {
     digitalWrite(2, LOW);

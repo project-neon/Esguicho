@@ -1,6 +1,8 @@
-#include <ESP32Servo.h>
-Servo ESCL;
-Servo ESCR;
+#include <ESP32Servo.h> //Comunicação com a ESC de cada motor v0.11.0
+
+//Cria os objetos para  cada ESC
+Servo ESCL; //ESC que controla o motor da esquerda
+Servo ESCR; //ESC que controla o motor da direita
 
 //Variáveis que receberão o valor da velocidades que serão enviadas para os ESC's
 int speedL = 0; //Valor de velocidade da esquerda
@@ -8,6 +10,9 @@ int speedR = 0; //Valor de velocidade da direita
 
 int EscSpeedL = 0; //Valor de velocidade para o ESC da esquerda
 int EscSpeedR = 0; //Valor de velocidade para o ESC da direita
+
+bool speedLPositiva = true; //Valor de velocidade para o ESC da esquerda
+bool speedRPositiva = true; //Valor de velocidade para o ESC da direita
 
 void motorsInit() {
     //Configurando o sinal PWM que será enviado aos ESC's
@@ -25,12 +30,13 @@ void motorsInit() {
     ESCR.write(90);
 }
 
-
 void motorsOutput() {
     EscSpeedL = map(speedL, -100, 100, 0, 180);
     EscSpeedR = map(speedR, -100, 100, 0, 180);
 
-    //TODO: Ver se funciona
+    if (EscSpeedL > 84 and EscSpeedL < 94) EscSpeedL = 90;
+    if (EscSpeedR > 84 and EscSpeedR < 94) EscSpeedR = 90;
+
     ESCL.write(EscSpeedL); 
     ESCR.write(EscSpeedR);
 }
