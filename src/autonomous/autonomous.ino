@@ -1,80 +1,88 @@
 //Bibliotecas internas
 #include "_config.h"
-#include "estrategias.h"
+#include "constants_declaration.h"
+#include "controller_IR.h"
+#include "motors.h"
+#include "distance_sensors.h"
+#include "utils.h"
 
+int flag = 0; //Direita --> 1, Esquerda --> -1, Valor inicial --> 0
+unsigned long contador = millis();
 
 void setup(){
-  
   Serial.begin(115200);
-  
-  //Iniciando o endereçamento dos sensores
-  Wire.begin();
-  
-  pinMode(SDIST_L, OUTPUT);
-  pinMode(SDIST_C, OUTPUT);
-  pinMode(SDIST_R, OUTPUT);
 
-  digitalWrite(SDIST_L, LOW);
-  digitalWrite(SDIST_C, LOW);
-  digitalWrite(SDIST_R, LOW);
-  
-  pinMode(SDIST_L, INPUT);
-  sensorL.init(true);
-  sensorL.setAddress((uint8_t)0x21); //endereço do sensor da esquerda
+  controllerInit();
+  sensorsInit();
+  motorsInit();
+}
 
-  pinMode(SDIST_C, INPUT);
-  sensorC.init(true);
-  sensorC.setAddress((uint8_t)0x23); //endereço do sensor da frente
+bool needsToStop(bool velEsqPositivaNova, bool velDirPositivaNova ) {
+  if (speedL == 0 and speedR == 0) return false; //Se a vel é 0, pode ir pra frente ou trás sem parar
 
-  pinMode(SDIST_R, INPUT);
-  sensorR.init(true);
-  sensorR.setAddress((uint8_t)0x25); //endereço do sensor da direita
+  speedLPositiva = speedL > 5 ? true : false; //Adicionei uma margem para ficar de acordo com a de 84 ate 94 que vai pra esc
+  speedRPositiva = speedR > 5 ? true : false;
+  if ((speedLPositiva == velEsqPositivaNova) and (speedRPositiva == velDirPositivaNova)) {
+    if (contadorFlutuacoes > 0) contadorFlutuacoes--; //Pode ser que a gnt soh teve variacoes temporarias, entao a gnt vai tirando elas
+    return false; //Se o sentido q vai rodar é igual ao anterior, nao para!
+  }
 
-  sensorL.setTimeout(100);
-  sensorC.setTimeout(100);
-  sensorR.setTimeout(100);
-  
-  //Configurando o sinal PWM que será enviado aos ESC's
-  ESCL.setPeriodHertz(50);             // Estabelece a frequência do PWM (50Hz)
-  ESCL.attach(MOTOR_L, 1000,2000);     // (Pino onde será enviado o sinal, largura de pulso mínima, largura de pulso máxima)
-  ESCR.setPeriodHertz(50);              
-  ESCR.attach(MOTOR_R, 1000,2000);     
-  /*                                      
-   * É necessário estabelecer uma faixa de largura de pulso para que o ESC
-   * responda corretamente a variação do sinal analógico lido do potenciômetro
-   * O valor da largura de pulso deve ser informado na escala de micro-segundos
-   * No caso, a largura de pulso do PWM mínima é de 1000us e a máxima é de 2000us                                      
-   */
+  contadorFlutuacoes++;
+  if (contadorFlutuacoes >= 10) {
+    speedL = speedR = 0; // APenas para caso a gnt tenha tido flutuacoes seguidas o suficiente. 10 eh o bastante?
+    motorsOutput();
+    delay(100); //TODO: Podemos aumentar esse valor p/ ver no codigo mais claramente se ele para antes de mudar a direcao
+    contadorFlutuacoes = 0;
+    return false; //Retorna falso para o codigo nao fazer um return dentro do loop!
+  }
+  return true;
+
 }
 
 void loop() {
-  //Armazena os valores lidos nas respectivas variáveis
-  distL = sensorL.readRangeSingleMillimeters();
-  distC = sensorC.readRangeSingleMillimeters();
-  distR = sensorR.readRangeSingleMillimeters();  
-  
-  selecionarEstrategia();
- 
-  // Mostra o valor que será enviado às ESCS
-  Serial.print(speedL);
-  Serial.print("\t");
-  Serial.print(speedR); 
-  Serial.print("\t\t");
-  
-  // Mostra o valor de cada sensor na tela e a decisão escolhida
-  Serial.print("R: ");
-  Serial.print(distR);
-  Serial.print("\t");
-  Serial.print("C: ");
-  Serial.print(distC);
-  Serial.print("\t");
-  Serial.print("L: ");
-  Serial.print(distL);
-  Serial.print("\t\t");
-  Serial.println(direction);
 
-  speedL = map(speedL, -100, 100, 0, 180);
-  speedR = map(speedR, -100, 100, 0, 180);
-  ESCL.write(speedL); 
-  ESCR.write(speedR); 
+  controllerIR();
+  distanceRead();
+
+//////////////////////////////Pisca o Led//////////////////////////////
+  if(stage == 1) {
+    if((millis() - contador) >= 300) {
+      digitalWrite(2, !digitalRead(2));
+      contador = millis();
+    }
+//////////////////////////////Inicio das decisões//////////////////////////////
+  } else if(stage == 2) {
+
+    if(distL < distAtkMax and distR < distAtkMax) {
+      if (needsToStop(true,true)) return;
+      Serial.print("ATACANDO MÁX \t\t");
+      speedL = speedR = speedMax;
+    } else if(distC < 100 or (distL < distAtk and distR < distAtk)) {
+      if (needsToStop(true,true)) return;
+      Serial.print("ATACANDO \t\t");
+      speedL = speedR = speedStandard;
+    } else if (distL < distAtk or distR < distAtk) {
+      if (needsToStop(true,true)) return;
+      (distL < distAtk) ? Serial.print("ESQ \t\t") : Serial.print("DIR \t\t");
+      speedL = (distL < distAtk) ? speedStandard*0.3 : speedStandard;
+      speedR = (distL < distAtk) ? speedStandard : speedStandard*0.3;
+      flag = (distL < distAtk) ? -1 : 1;
+    } else {
+      if (needsToStop(flag == -1, flag != -1)) return;
+      (flag == -1) ? Serial.print("PROCURANDO ESQ \t\t") :  Serial.print("PROCURANDO DIR \t\t");;
+      speedL = (flag == -1) ? -1*searchSpeed : searchSpeed;
+      speedR = (flag == -1) ? searchSpeed : -1*searchSpeed;
+    }
+
+    motorsOutput();
+//////////////////////////////Fim das decisões//////////////////////////////
+  } else {
+    speedL = speedR = 0;
+    motorsOutput();
+  }
+
+
+  printSpeed();
+  printDistances();
+
 }
