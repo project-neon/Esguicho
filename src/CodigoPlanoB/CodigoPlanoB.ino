@@ -22,27 +22,25 @@ void loop() {
   controllerIR();
 
   if(stage == 1) {
+
     if((millis() - contador) >= 300) {
       digitalWrite(2, !digitalRead(2)); //Pisca o Led
       contador = millis();
     }
-  }
-  ///////////////////////////////////////////////////////////////////////////////////////
-  else if(stage == 2) {    
-    distanceRead();  
+//////////////////////////////Inicio das decisões//////////////////////////////
+  } else if(stage == 2) {
+
+    distanceRead();
     printDistances();
 
     if(distC < 600){
       speedL = speedR = 85;
+    } else{
+      speedL = 21;
+      speedR = -21;
     }
-    else{
-      speedL = 21;      
-      speedR = -21;  
-    }
-  }
-  //fim das decisões
-  ///////////////////////////////////////////////////////////////////////////////////////////////
-  else {
+//////////////////////////////Fim das decisões//////////////////////////////
+  } else {
     speedL = speedR = 0;
   }
 

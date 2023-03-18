@@ -7,4 +7,4 @@ const int speedStandard = 30; //vel padrão --- Cuidado se abaixar para menos de
 const int searchSpeed = speedStandard*0.6;//vel de girar no proprio eixo
 const int aproxSpeed = speedStandard*0.25;//vel ao se aproximar do oponente
 
-int contadorFLutuacoes = 0;  
+int contadorFlutuacoes = 0;

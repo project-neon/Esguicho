@@ -4,7 +4,7 @@ void printSpeed() {
   Serial.print(speedL);
   Serial.print("\t");
   Serial.print("speedR: ");
-  Serial.print(speedR); 
+  Serial.print(speedR);
   Serial.print("\t\t");
 }
 

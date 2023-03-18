@@ -59,7 +59,7 @@ void controllerIR() {
       case I1:
         if(stage == 0)
         {
-          Serial.println("primeiro");  
+          Serial.println("primeiro");
           stage = 1;
         }
         break;
@@ -71,7 +71,7 @@ void controllerIR() {
         }
         break;
       case I3:
-            Serial.println("MORREU");  
+            Serial.println("MORREU");
             stage = -10;
         break;
     }

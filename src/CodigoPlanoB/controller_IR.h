@@ -54,27 +54,24 @@ void controllerIR() {
     valueIR = (results.value);
     Serial.print("valueIR: ");
     Serial.println(valueIR);
-    switch(valueIR)
-    {
+    switch(valueIR) {
       case I1:
-        if(stage == 0)
-        {
-          Serial.println("primeiro");  
+        if(stage == 0) {
+          Serial.println("primeiro");
           stage = 1;
         }
         break;
       case I2:
-        if(stage == 1)
-        {
+        if(stage == 1) {
           digitalWrite(2, HIGH);
           Serial.println("segundo");
           stage = 2;
         }
         break;
       case I3:
-            digitalWrite(2, LOW);   
-            Serial.println("MORREU");  
-            stage = -10;
+        digitalWrite(2, LOW);
+        Serial.println("MORREU");
+        stage = -10;
         break;
     }
     irrecv.resume();

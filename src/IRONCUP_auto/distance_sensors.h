@@ -18,7 +18,7 @@ void sensorsInit() {
     digitalWrite(SDIST_L, LOW);
     digitalWrite(SDIST_C, LOW);
     digitalWrite(SDIST_R, LOW);
-  
+
     pinMode(SDIST_L, INPUT);
     sensorL.init(true);
     sensorL.setAddress((uint8_t)0x21); //endereço do sensor da esquerda
@@ -33,14 +33,14 @@ void sensorsInit() {
 
     sensorL.setTimeout(100);
     sensorC.setTimeout(100);
-    sensorR.setTimeout(100);  
+    sensorR.setTimeout(100);
 }
 
 void distanceRead() {
-    //Armazena os valores lidos nas respectivas variáveis 
+    //Armazena os valores lidos nas respectivas variáveis
     distL = sensorL.readRangeSingleMillimeters();
     distC = sensorC.readRangeSingleMillimeters();
-    distR = sensorR.readRangeSingleMillimeters(); 
+    distR = sensorR.readRangeSingleMillimeters();
     if(stage == 0){
         if((distL > 60000) or (distC > 60000) or (distR > 60000)) {
         digitalWrite(2, HIGH);
@@ -49,7 +49,7 @@ void distanceRead() {
         digitalWrite(2, LOW);
         }
     }
-    
+
     if(distL > 600) distL = 600;
     if(distC > 600) distC = 600;
     if(distR > 600) distR = 600;

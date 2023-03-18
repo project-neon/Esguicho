@@ -13,7 +13,7 @@ int EscSpeedR = 0; //Valor de velocidade para o ESC da direita
 
 bool speedLPositiva = true; //Valor de velocidade para o ESC da esquerda
 bool speedRPositiva = true; //Valor de velocidade para o ESC da direita
-
+ 
 void motorsInit() {
     //Configurando o sinal PWM que será enviado aos ESC's
     ESCL.setPeriodHertz(50);             // Estabelece a frequência do PWM (50Hz)

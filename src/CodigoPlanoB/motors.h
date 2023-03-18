@@ -18,15 +18,15 @@ void motorsInit() {
     //Configurando o sinal PWM que será enviado aos ESC's
     ESCL.setPeriodHertz(50);             // Estabelece a frequência do PWM (50Hz)
     ESCL.attach(MOTOR_L, 1000,2000);     // (Pino onde será enviado o sinal, largura de pulso mínima, largura de pulso máxima)
-    ESCR.setPeriodHertz(50);              
-    ESCR.attach(MOTOR_R, 1000,2000);     
-    /*                                      
+    ESCR.setPeriodHertz(50);
+    ESCR.attach(MOTOR_R, 1000,2000);
+    /*
     * É necessário estabelecer uma faixa de largura de pulso para que o ESC
     * responda corretamente a variação do sinal analógico lido do potenciômetro
     * O valor da largura de pulso deve ser informado na escala de micro-segundos
-    * No caso, a largura de pulso do PWM mínima é de 1000us e a máxima é de 2000us                                      
+    * No caso, a largura de pulso do PWM mínima é de 1000us e a máxima é de 2000us
     */
-    ESCL.write(90); 
+    ESCL.write(90);
     ESCR.write(90);
 }
 
@@ -37,6 +37,6 @@ void motorsOutput() {
     if (EscSpeedL > 84 and EscSpeedL < 94) EscSpeedL = 90;
     if (EscSpeedR > 84 and EscSpeedR < 94) EscSpeedR = 90;
 
-    ESCL.write(EscSpeedL); 
+    ESCL.write(EscSpeedL);
     ESCR.write(EscSpeedR);
 }
