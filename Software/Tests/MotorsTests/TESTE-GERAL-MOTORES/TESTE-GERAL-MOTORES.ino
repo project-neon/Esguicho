@@ -15,7 +15,7 @@ void setup(){
 
 void loop() {
 
-  geral_test();
+  general_test();
   /**o teste geral vai ligar o led, girar o motor esquerdo nos dois sentidos, em seguida o direito nos dois sentidos
   e simulara o robo seguindo em frente, tras, giro anti-horario, giro horario, desligar o led.
   **/

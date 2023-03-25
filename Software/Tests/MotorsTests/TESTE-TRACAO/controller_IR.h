@@ -19,8 +19,8 @@ const int I6 = 551512215;
 // const int I6 = 2576;
 
 int valueIR = 0;
-int contador = 0;
-int numeroPiscadas = 0;
+int LedCounter = 0;
+int BlinksCounter = 0;
 int guardaVelocidade = 0;
 bool go = false;
 
@@ -43,29 +43,29 @@ void controllerIR() {
     switch(valueIR)
     {
       case (I1 or I2 or I3  or I4  or I5  or I6):
-        contador = millis();
+        LedCounter = millis();
       case I1:
-        Serial.println("20");  
-        speedL = speedR = numeroPiscadas = 20;
+        Serial.println("20");
+        speedL = speedR = BlinksCounter = 20;
         break;
       case I2:
         Serial.println("40");
-        speedL = speedR = numeroPiscadas = 40;
+        speedL = speedR = BlinksCounter = 40;
         break;
       case I3:
-        Serial.println("60");  
-        speedL = speedR = numeroPiscadas = 60;
+        Serial.println("60");
+        speedL = speedR = BlinksCounter = 60;
         break;
       case I4:
-        Serial.println("80");  
-        speedL = speedR = numeroPiscadas = 80;
+        Serial.println("80");
+        speedL = speedR = BlinksCounter = 80;
         break;
       case I5:
-        Serial.println("100");  
-        speedL = speedR = numeroPiscadas = 100;
+        Serial.println("100");
+        speedL = speedR = BlinksCounter = 100;
         break;
       case I6:
-        Serial.println("Inicia/para");  
+        Serial.println("Inicia/para");
         if (go) {
           guardaVelocidade = speedL;
           speedL = speedR = 0;
@@ -76,7 +76,7 @@ void controllerIR() {
         } else {
           go = true;
         }
-        break; 
+        break;
       default:
        break;
     }

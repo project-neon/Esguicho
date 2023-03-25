@@ -11,8 +11,10 @@ int speedR = 0; //Valor de velocidade da direita
 int EscSpeedL = 0; //Valor de velocidade para o ESC da esquerda
 int EscSpeedR = 0; //Valor de velocidade para o ESC da direita
 
-bool speedLPositiva = true; //Valor de velocidade para o ESC da esquerda
-bool speedRPositiva = true; //Valor de velocidade para o ESC da direita
+bool speedLPositive = true; //Valor de velocidade para o ESC da esquerda
+bool speedRPositive = true; //Valor de velocidade para o ESC da direita
+
+int motorUnbiasedVel = 92; //Velocidade 0 da ESC
 
 void motorsInit() {
     //Configurando o sinal PWM que será enviado aos ESC's
@@ -26,16 +28,16 @@ void motorsInit() {
     * O valor da largura de pulso deve ser informado na escala de micro-segundos
     * No caso, a largura de pulso do PWM mínima é de 1000us e a máxima é de 2000us
     */
-    ESCL.write(90);
-    ESCR.write(90);
+    ESCL.write(motorUnbiasedVel);
+    ESCR.write(motorUnbiasedVel);
 }
 
 void motorsOutput() {
     EscSpeedL = map(speedL, -100, 100, 0, 180);
     EscSpeedR = map(speedR, -100, 100, 0, 180);
 
-    if (EscSpeedL > 84 and EscSpeedL < 94) EscSpeedL = 90;
-    if (EscSpeedR > 84 and EscSpeedR < 94) EscSpeedR = 90;
+    if (EscSpeedL > 84 and EscSpeedL < 94) EscSpeedL = motorUnbiasedVel;
+    if (EscSpeedR > 84 and EscSpeedR < 94) EscSpeedR = motorUnbiasedVel;
 
     ESCL.write(EscSpeedL);
     ESCR.write(EscSpeedR);

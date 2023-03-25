@@ -4,7 +4,7 @@
 #include "controller_IR.h"
 #include "utils.h"
 
-bool ledLigado = false;
+bool isLedOn = false;
 
 void setup(){
   Serial.begin(115200);
@@ -17,16 +17,16 @@ void loop() {
 
   controllerIR();
 
-  if((millis() - contador > 300) and numeroPiscadas > 0) {
-    ledLigado ? digitalWrite(2, LOW) : digitalWrite(2, HIGH);
-    ledLigado = ledLigado ? false : true;
-    contador = millis();
-    numeroPiscadas = numeroPiscadas - 5;
+  if((millis() - LedCounter > 300) and BlinksCounter > 0) {
+    isLedOn ? digitalWrite(2, LOW) : digitalWrite(2, HIGH);
+    isLedOn = isLedOn ? false : true;
+    LedCounter = millis();
+    BlinksCounter = BlinksCounter - 5;
   }
 
   if(go) {
     motorsOutput();
     printSpeed();
   }
-  
+
 }

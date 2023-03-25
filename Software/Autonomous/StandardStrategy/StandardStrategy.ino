@@ -7,7 +7,7 @@
 #include "utils.h"
 
 int flag = 0; //Direita --> 1, Esquerda --> -1, Valor inicial --> 0
-unsigned long contador = millis();
+unsigned long LedCounter = millis();
 
 void setup(){
   Serial.begin(115200);
@@ -17,22 +17,22 @@ void setup(){
   motorsInit();
 }
 
-bool needsToStop(bool velEsqPositivaNova, bool velDirPositivaNova ) {
+bool needsToStop(bool newSpeedLPositive, bool newSpeedRPositive ) {
   if (speedL == 0 and speedR == 0) return false; //Se a vel é 0, pode ir pra frente ou trás sem parar
 
-  speedLPositiva = speedL > 5 ? true : false; //Adicionei uma margem para ficar de acordo com a de 84 ate 94 que vai pra esc
-  speedRPositiva = speedR > 5 ? true : false;
-  if ((speedLPositiva == velEsqPositivaNova) and (speedRPositiva == velDirPositivaNova)) {
-    if (contadorFlutuacoes > 0) contadorFlutuacoes--; //Pode ser que a gnt soh teve variacoes temporarias, entao a gnt vai tirando elas
+  speedLPositive = speedL > 5 ? true : false; //Adicionei uma margem para ficar de acordo com a de 84 ate 94 que vai pra esc
+  speedRPositive = speedR > 5 ? true : false;
+  if ((speedLPositive == newSpeedLPositive) and (speedRPositive == newSpeedRPositive)) {
+    if (fluctuationsCounter > 0) fluctuationsCounter--; //Pode ser que a gnt soh teve variacoes temporarias, entao a gnt vai tirando elas
     return false; //Se o sentido q vai rodar é igual ao anterior, nao para!
   }
 
-  contadorFlutuacoes++;
-  if (contadorFlutuacoes >= 10) {
+  fluctuationsCounter++;
+  if (fluctuationsCounter >= 10) {
     speedL = speedR = 0; // APenas para caso a gnt tenha tido flutuacoes seguidas o suficiente. 10 eh o bastante?
     motorsOutput();
     delay(100); //TODO: Podemos aumentar esse valor p/ ver no codigo mais claramente se ele para antes de mudar a direcao
-    contadorFlutuacoes = 0;
+    fluctuationsCounter = 0;
     return false; //Retorna falso para o codigo nao fazer um return dentro do loop!
   }
   return true;
@@ -46,9 +46,9 @@ void loop() {
 
 //////////////////////////////Pisca o Led//////////////////////////////
   if(stage == 1) {
-    if((millis() - contador) >= 300) {
+    if((millis() - LedCounter) >= 300) {
       digitalWrite(2, !digitalRead(2));
-      contador = millis();
+      LedCounter = millis();
     }
 //////////////////////////////Inicio das decisões//////////////////////////////
   } else if(stage == 2) {
@@ -69,7 +69,7 @@ void loop() {
       flag = (distL < distAtk) ? -1 : 1;
     } else {
       if (needsToStop(flag == -1, flag != -1)) return;
-      (flag == -1) ? Serial.print("PROCURANDO ESQ \t\t") :  Serial.print("PROCURANDO DIR \t\t");;
+      (flag == -1) ? Serial.print("PROCURANDO ESQ \t\t") :  Serial.print("PROCURANDO DIR \t\t");
       speedL = (flag == -1) ? -1*searchSpeed : searchSpeed;
       speedR = (flag == -1) ? searchSpeed : -1*searchSpeed;
     }

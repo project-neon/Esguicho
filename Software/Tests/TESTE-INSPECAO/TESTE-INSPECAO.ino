@@ -3,7 +3,7 @@
 #include "motors.h"
 #include "controller_IR.h"
 
-unsigned long contador = millis();
+unsigned long LedCounter = millis();
 
 void setup(){
   Serial.begin(115200);
@@ -15,9 +15,9 @@ void loop() {
   controllerIR();
 
   if(stage == 1) {
-    if((millis() - contador) < 300) digitalWrite(2, HIGH); // Acende o led do pino 2
+    if((millis() - LedCounter) < 300) digitalWrite(2, HIGH); // Acende o led do pino 2
     else digitalWrite(2, LOW); // Apaga o led do pino 2
-    if((millis() - contador) > 600) contador = millis(); // Verifica se já passou 600 milisegundos
+    if((millis() - LedCounter) > 600) LedCounter = millis(); // Verifica se já passou 600 milisegundos
   }
   else if(stage == 2) {
     digitalWrite(2, HIGH);
@@ -33,6 +33,6 @@ void loop() {
   Serial.print(speedL);
   Serial.print("\t");
   Serial.print("speedR: ");
-  Serial.print(speedR); 
+  Serial.print(speedR);
   Serial.println("\t\t");
 }

@@ -7,7 +7,7 @@
 #include "utils.h"
 
 int flag = 0; //Direita --> 1, Esquerda --> -1, Valor inicial --> 0
-unsigned long contador = millis();
+unsigned long LedCounter = millis();
 
 void setup(){
   Serial.begin(115200);
@@ -23,9 +23,9 @@ void loop() {
 
   if(stage == 1) {
 
-    if((millis() - contador) >= 300) {
+    if((millis() - LedCounter) >= 300) {
       digitalWrite(2, !digitalRead(2)); //Pisca o Led
-      contador = millis();
+      LedCounter = millis();
     }
 //////////////////////////////Inicio das decisões//////////////////////////////
   } else if(stage == 2) {
