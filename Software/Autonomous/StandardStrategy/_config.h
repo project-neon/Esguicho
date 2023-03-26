@@ -6,9 +6,9 @@
 #define MOTOR_R 17
 
 //Distance sensors (left, middle, right)
-#define SDIST_L 23
+#define SDIST_L 18
 #define SDIST_C 19
-#define SDIST_R 18
+#define SDIST_R 23
 
 //Border sensors (left, right)
 #define SBORDER_L 34

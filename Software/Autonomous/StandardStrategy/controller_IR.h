@@ -36,7 +36,7 @@ const int I5 = 528;
 const int I6 = 2576;
 
 int valueIR = 0;
-int stage = 2;
+int stage = 0;
 
 IRrecv irrecv(JCONTROLLER);
 decode_results results;
@@ -52,8 +52,8 @@ void controllerInit() {
 void controllerIR() {
   if (irrecv.decode(&results)) {
     valueIR = (results.value);
-    Serial.print("valueIR: ");
-    Serial.println(valueIR);
+    // Serial.print("valueIR: ");
+    // Serial.println(valueIR);
     switch(valueIR)
     {
       case I1:

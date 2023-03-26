@@ -52,7 +52,6 @@ void loop() {
     }
 //////////////////////////////Inicio das decisões//////////////////////////////
   } else if(stage == 2) {
-
     if(distL < distAtkMax and distR < distAtkMax) {
       if (needsToStop(true,true)) return;
       Serial.print("ATACANDO MÁX \t\t");
@@ -68,7 +67,7 @@ void loop() {
       speedR = (distL < distAtk) ? speedStandard : speedStandard*0.3;
       flag = (distL < distAtk) ? -1 : 1;
     } else {
-      if (needsToStop(flag == -1, flag != -1)) return;
+      if (needsToStop(flag != -1, flag == -1)) return;
       (flag == -1) ? Serial.print("PROCURANDO ESQ \t\t") :  Serial.print("PROCURANDO DIR \t\t");
       speedL = (flag == -1) ? -1*searchSpeed : searchSpeed;
       speedR = (flag == -1) ? searchSpeed : -1*searchSpeed;
