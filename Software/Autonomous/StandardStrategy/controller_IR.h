@@ -34,6 +34,11 @@ const int I3 = 1040;
 const int I4 = 3088;
 const int I5 = 528;
 const int I6 = 2576;
+const int I7 = 1552;
+const int I8 = 3600;
+const int I9 = 272;
+const int I0 = 2320;
+
 
 int valueIR = 0;
 int stage = 0;
@@ -57,22 +62,23 @@ void controllerIR() {
     switch(valueIR)
     {
       case I1:
-        if(stage == 0)
-        {
+        if(stage == 0) {
           Serial.println("primeiro");
           stage = 1;
         }
+        digitalWrite(2, LOW);
+        delay(50);
         break;
       case I2:
-        if(stage == 1)
-        {
+        if(stage == 1) {
           Serial.println("segundo");
           stage = 2;
+          digitalWrite(2, LOW);
         }
         break;
       case I3:
-            Serial.println("MORREU");
-            stage = -10;
+        Serial.println("MORREU");
+        stage = -10;
         break;
     }
     irrecv.resume();

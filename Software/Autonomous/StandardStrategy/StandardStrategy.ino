@@ -7,7 +7,6 @@
 #include "utils.h"
 
 int flag = 0; //Direita --> 1, Esquerda --> -1, Valor inicial --> 0
-unsigned long LedCounter = millis();
 
 void setup(){
   Serial.begin(115200);
@@ -44,13 +43,10 @@ void loop() {
   controllerIR();
   distanceRead();
 
-//////////////////////////////Pisca o Led//////////////////////////////
+//////////////////////////////Led Ligado//////////////////////////////
   if(stage == 1) {
-    if((millis() - LedCounter) >= 300) {
-      digitalWrite(2, !digitalRead(2));
-      LedCounter = millis();
-    }
-//////////////////////////////Inicio das decisões//////////////////////////////
+    digitalWrite(2, HIGH);
+//////////////////////////////Estrategia//////////////////////////////
   } else if(stage == 2) {
     if(distL < distAtkMax and distR < distAtkMax) {
       if (needsToStop(true,true)) return;
@@ -74,7 +70,7 @@ void loop() {
     }
 
     motorsOutput();
-//////////////////////////////Fim das decisões//////////////////////////////
+//////////////////////////////Robo Parou//////////////////////////////
   } else {
     speedL = speedR = 0;
     motorsOutput();
