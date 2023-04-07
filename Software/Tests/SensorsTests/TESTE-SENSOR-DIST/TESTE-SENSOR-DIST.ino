@@ -2,7 +2,7 @@
 #include <Wire.h>       //Auxiliar dos sensores
 
 //Bibliotecas internas
-#include "_config.h"
+#include "config.h"
 
 VL53L0X sensorL;  //Sensor da esquerda
 VL53L0X sensorC;  //Sensor da frente
@@ -14,12 +14,12 @@ int distC;  //Valor lido pelo sensor da frente
 int distR;  //Valor lido pelo sensor da direita
 
 void setup(){
-  
+
   Serial.begin(115200);
-  
+
   //Iniciando o endereçamento dos sensores
   Wire.begin();
-  
+
   pinMode(SDIST_L, OUTPUT);
   pinMode(SDIST_C, OUTPUT);
   pinMode(SDIST_R, OUTPUT);
@@ -27,7 +27,7 @@ void setup(){
   digitalWrite(SDIST_L, LOW);
   digitalWrite(SDIST_C, LOW);
   digitalWrite(SDIST_R, LOW);
-  
+
   pinMode(SDIST_L, INPUT);
   sensorL.init(true);
   sensorL.setAddress((uint8_t)0x21); //endereço do sensor da esquerda
@@ -49,8 +49,8 @@ void loop() {
   //Armazena os valores lidos nas respectivas variáveis
   distL = sensorL.readRangeSingleMillimeters();
   distC = sensorC.readRangeSingleMillimeters();
-  distR = sensorR.readRangeSingleMillimeters();  
-  
+  distR = sensorR.readRangeSingleMillimeters();
+
   // Mostra o valor de cada sensor na tela e a decisão escolhida
   Serial.print("L: ");
   Serial.print(distL);

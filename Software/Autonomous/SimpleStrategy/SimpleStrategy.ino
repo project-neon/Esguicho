@@ -1,5 +1,5 @@
 //Bibliotecas internas
-#include "_config.h"
+#include "config.h"
 #include "constants_declaration.h"
 #include "controller_IR.h"
 #include "motors.h"

@@ -1,5 +1,5 @@
 //Bibliotecas internas
-#include "_config.h"
+#include "config.h"
 #include "funcoes.h"
 
 //92: valor enviado no "ESC.write" pra inicializacao dos motores e para parar a rotacao
