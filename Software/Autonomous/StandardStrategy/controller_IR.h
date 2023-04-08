@@ -43,25 +43,26 @@ const int I0 = 2320;
 int valueIR = 0;
 int stage = 0;
 
-IRrecv irrecv(JCONTROLLER);
-decode_results results;
-
 void controllerInit() {
   //Iniciando o endereçamento dos sensores
   Wire.begin();
-  irrecv.enableIRIn(); // Start the receiver
+  // IrReceiver.begin(JCONTROLLER, ENABLE_LED_FEEDBACK); // Start the receiver
+  IrReceiver.begin(JCONTROLLER); // Start the receiver
   pinMode(JCONTROLLER, INPUT);
   pinMode(2, OUTPUT);
 }
 
 void controllerIR() {
-  if (irrecv.decode(&results)) {
-    valueIR = (results.value);
-    // Serial.print("valueIR: ");
-    // Serial.println(valueIR);
-    switch(valueIR)
+  if (IrReceiver.decode()) {
+    valueIR = IrReceiver.decodedIRData.command;
+    // Serial.println("IrReceiver.decodedIRData.decodedRawData");
+    // Serial.println(IrReceiver.decodedIRData.decodedRawData);
+    // Serial.println("IrReceiver.decodedIRData.command");
+    // Serial.println(IrReceiver.decodedIRData.command);
+    if (IrReceiver.decodedIRData.decodedRawData > 0 && IrReceiver.decodedIRData.decodedRawData < 1000) {
+      switch(valueIR)
     {
-      case I1:
+      case 0:
         if(stage == 0) {
           Serial.println("primeiro");
           stage = 1;
@@ -69,18 +70,19 @@ void controllerIR() {
         digitalWrite(2, LOW);
         delay(50);
         break;
-      case I2:
+      case 1:
         if(stage == 1) {
           Serial.println("segundo");
           stage = 2;
           digitalWrite(2, LOW);
         }
         break;
-      case I3:
+      case 2:
         Serial.println("MORREU");
         stage = -10;
         break;
     }
-    irrecv.resume();
+    }
+    IrReceiver.resume();
   }
 }
