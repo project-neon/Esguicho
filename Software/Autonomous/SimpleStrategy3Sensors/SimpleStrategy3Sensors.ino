@@ -25,6 +25,7 @@ void loop() {
     digitalWrite(2, HIGH);
 //////////////////////////////Estrategia//////////////////////////////
   } else if(stage == 2) {
+    distanceRead();
     if(distC < distAtk or (distL < distAtk and distR < distAtk)) {
       Serial.print("ATACANDO \t\t");
       speedL = speedR = speedStandard;
@@ -47,4 +48,5 @@ void loop() {
 
   motorsOutput();
   printSpeed();
+  printDistances();
 }
