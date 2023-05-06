@@ -26,21 +26,22 @@ void loop() {
 //////////////////////////////Estrategia//////////////////////////////
   } else if(stage == 2) {
     distanceRead();
-    if(distC < distAtk or (distL < distAtk and distR < distAtk)) {
+    if(distL < distAtk/4 and distR < distAtk/4) {
+      Serial.print("ATACANDO MAX \t\t");
+      speedL = speedR = speedAtk;
+    } else if(distL < distAtk and distR < distAtk) {
       Serial.print("ATACANDO \t\t");
       speedL = speedR = speedStandard;
     } else if (distL < distAtk or distR < distAtk) {
       (distL < distAtk) ? Serial.print("ESQ \t\t") : Serial.print("DIR \t\t");
-      speedL = (distL < distAtk) ? speedStandard*0.3 : speedStandard;
-      speedR = (distL < distAtk) ? speedStandard : speedStandard*0.3;
+      speedL = (distL < distAtk) ? searchSpeed : speedStandard;
+      speedR = (distL < distAtk) ? speedStandard : searchSpeed;
       flag = (distL < distAtk) ? -1 : 1;
     } else {
       (flag == -1) ? Serial.print("PROCURANDO ESQ \t\t") :  Serial.print("PROCURANDO DIR \t\t");
       speedL = (flag == -1) ? -1*searchSpeed : searchSpeed;
       speedR = (flag == -1) ? searchSpeed : -1*searchSpeed;
     }
-
-    motorsOutput();
 //////////////////////////////Robo Parou//////////////////////////////
   } else {
     speedL = speedR = 0;

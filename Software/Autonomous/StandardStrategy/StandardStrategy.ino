@@ -27,10 +27,10 @@ bool needsToStop(bool newSpeedLPositive, bool newSpeedRPositive ) {
   }
 
   fluctuationsCounter++;
-  if (fluctuationsCounter >= 10) {
+  if (fluctuationsCounter >= 3) {
     speedL = speedR = 0; // APenas para caso a gnt tenha tido flutuacoes seguidas o suficiente. 10 eh o bastante?
     motorsOutput();
-    delay(100); //TODO: Podemos aumentar esse valor p/ ver no codigo mais claramente se ele para antes de mudar a direcao
+    delay(10); //TODO: Podemos aumentar esse valor p/ ver no codigo mais claramente se ele para antes de mudar a direcao
     fluctuationsCounter = 0;
     return false; //Retorna falso para o codigo nao fazer um return dentro do loop!
   }
@@ -48,19 +48,25 @@ void loop() {
     digitalWrite(2, HIGH);
 //////////////////////////////Estrategia//////////////////////////////
   } else if(stage == 2) {
-    if(distL < distAtkMax and distR < distAtkMax) {
+    if(distL < distAtkMax/4 and distR < distAtkMax/4) {
       if (needsToStop(true,true)) return;
       Serial.print("ATACANDO MÁX \t\t");
-      speedL = speedR = speedMax;
-    } else if(distC < 100 or (distL < distAtk and distR < distAtk)) {
+      speedL = speedR = speedAtk;
+    } else if((distC > 100 and distC < distAtk) and (distL < distAtk)) {
       if (needsToStop(true,true)) return;
-      Serial.print("ATACANDO \t\t");
-      speedL = speedR = speedStandard;
+      Serial.print("ATACANDO ESQ \t\t");
+      speedL = speedStandard*0.3;
+      speedR = speedStandard;
+    } else if((distC > 100 and distC < distAtk) and (distR < distAtk)) {
+      if (needsToStop(true,true)) return;
+      Serial.print("ATACANDO DIR \t\t");
+      speedL = speedStandard;
+      speedR = speedStandard*0.3;
     } else if (distL < distAtk or distR < distAtk) {
       if (needsToStop(true,true)) return;
       (distL < distAtk) ? Serial.print("ESQ \t\t") : Serial.print("DIR \t\t");
-      speedL = (distL < distAtk) ? speedStandard*0.3 : speedStandard;
-      speedR = (distL < distAtk) ? speedStandard : speedStandard*0.3;
+      speedL = (distL < distAtk) ? 0 : speedStandard;
+      speedR = (distL < distAtk) ? speedStandard : 0;
       flag = (distL < distAtk) ? -1 : 1;
     } else {
       if (needsToStop(flag != -1, flag == -1)) return;
