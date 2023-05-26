@@ -48,25 +48,19 @@ void loop() {
     digitalWrite(2, HIGH);
 //////////////////////////////Estrategia//////////////////////////////
   } else if(stage == 2) {
-    if(distL < distAtkMax/4 and distR < distAtkMax/4) {
+   if(distC < distAtk/3 and (distL < distAtk/3 or distR < distAtk/3)) {
       if (needsToStop(true,true)) return;
       Serial.print("ATACANDO MÁX \t\t");
       speedL = speedR = speedAtk;
-    } else if((distC > 100 and distC < distAtk) and (distL < distAtk)) {
+    } else if(distC < distAtk and (distL < distAtk or distR < distAtk)) {
       if (needsToStop(true,true)) return;
-      Serial.print("ATACANDO ESQ \t\t");
-      speedL = speedStandard*0.3;
-      speedR = speedStandard;
-    } else if((distC > 100 and distC < distAtk) and (distR < distAtk)) {
-      if (needsToStop(true,true)) return;
-      Serial.print("ATACANDO DIR \t\t");
-      speedL = speedStandard;
-      speedR = speedStandard*0.3;
+      Serial.print("ATACANDO \t\t");
+      speedL = speedR = speedStandard;
     } else if (distL < distAtk or distR < distAtk) {
       if (needsToStop(true,true)) return;
       (distL < distAtk) ? Serial.print("ESQ \t\t") : Serial.print("DIR \t\t");
-      speedL = (distL < distAtk) ? 0 : speedStandard;
-      speedR = (distL < distAtk) ? speedStandard : 0;
+      speedL = (distL < distAtk) ? speedStandard*0.9 : speedStandard;
+      speedR = (distL < distAtk) ? speedStandard : speedStandard*0.9;
       flag = (distL < distAtk) ? -1 : 1;
     } else {
       if (needsToStop(flag != -1, flag == -1)) return;
@@ -74,15 +68,12 @@ void loop() {
       speedL = (flag == -1) ? -1*searchSpeed : searchSpeed;
       speedR = (flag == -1) ? searchSpeed : -1*searchSpeed;
     }
-
-    motorsOutput();
 //////////////////////////////Robo Parou//////////////////////////////
   } else {
     speedL = speedR = 0;
-    motorsOutput();
   }
 
-
+  motorsOutput();
   printSpeed();
   printDistances();
 
