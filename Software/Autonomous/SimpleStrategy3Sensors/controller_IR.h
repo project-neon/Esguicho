@@ -42,8 +42,6 @@ IRrecv irrecv(JCONTROLLER);
 decode_results results;
 
 void controllerInit() {
-  //Iniciando o endereçamento dos sensores
-  Wire.begin();
   irrecv.enableIRIn(); // Start the receiver
   pinMode(JCONTROLLER, INPUT);
   pinMode(2, OUTPUT);
@@ -74,6 +72,11 @@ void controllerIR() {
       case I3:
         Serial.println("MORREU");
         stage = -10;
+        break;
+      case I4:
+        Serial.println("LOAD");
+        stage = 0;
+        digitalWrite(2, HIGH);
         break;
     }
     irrecv.resume();
