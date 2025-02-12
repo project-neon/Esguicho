@@ -12,20 +12,20 @@ void setup(){
   Serial.begin(115200);
 
   controllerInit();
-  sensorsInit();
+  DistanceSensorVL53L0XInit();
   motorsInit();
 }
 
 void loop() {
 
   controllerIR();
+  readDistanceSensorsValues();
 
 //////////////////////////////Led Ligado//////////////////////////////
   if(stage == 1) {
     digitalWrite(2, HIGH);
 //////////////////////////////Estrategia//////////////////////////////
   } else if(stage == 2) {
-    distanceRead();
     if(distC < distAtk/3 and (distL < distAtk/3 or distR < distAtk/3)) {
       Serial.print("ATACANDO MAX \t\t");
       speedL = speedR = speedAtk;
@@ -49,5 +49,5 @@ void loop() {
 
   motorsOutput();
   printSpeed();
-  printDistances();
+  printDistanceSensorsValues();
 }

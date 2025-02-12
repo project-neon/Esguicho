@@ -9,8 +9,8 @@ void printSpeed() {
 }
 
 
-void printDistances() {
-  // Mostra o valor de cada sensor na tela e a decisão escolhida
+void printDistanceSensorsValues() {
+  // Mostra o valor de cada sensor na tela
   Serial.print("L: ");
   Serial.print(distL);
   Serial.print("\t");
